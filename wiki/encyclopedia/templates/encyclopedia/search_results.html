@@ -1,0 +1,19 @@
+{% extends 'encyclopedia/layout.html' %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
+{% block body %}
+    {% if flag %}
+        <h3>Did you mean?</h3>
+            <ul>
+                {% for entry in entries %}
+                    <li><a href="{% url 'entry' entry %}"> {{ entry }} </a></li>
+                {% endfor %}
+            </ul>
+    {% else %}
+        <h3>No results found :(</h3>
+        This can happen if the entry does not exists or there can be a typo in the search keyword
+    {% endif %}
+{% endblock %}

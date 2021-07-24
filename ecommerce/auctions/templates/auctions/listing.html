@@ -1,0 +1,87 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Listing: {{ item.item_name }}</h2>
+
+<div>        
+        {% if item.item_image %}
+            <img src="{{ item.item_image }}"> <br>
+        {% endif %}
+
+        {{ item.item_description }}
+
+    <h3> {{ item.item_price }} </h3>
+    
+    {% if user.is_authenticated %}
+
+        {% if not message  %}
+            The bid should be higher than the current highest bid 
+        {% endif %}
+
+        {% if user.username == item.created_by.username %}
+
+            {% if item.listing_status == 'Closed' %}
+                You closed this bidding at ${{ item.item_price }}
+            {% else %}
+                <form action = "{% url 'listings' item.id %}" method="POST">
+                    {% csrf_token %} 
+                    <input name = "close" type="submit" value="Close bidding">
+                </form>
+            {% endif %}
+
+        {% else %}
+
+            {% if item.highest_bidder == user and item.listing_status == 'Closed' %}
+
+                Congratulations! You won the bid for {{ item.item_name }} at ${{ item.item_price }}.
+                
+            {% else %}
+
+                <form action = "{% url 'listings' item.id %}" method="POST">
+                    {% csrf_token %}
+                    Place a bid: <input type = "number" name = "bid_amount" placeholder="Enter a bid" required>  
+                    <input type="submit" value = "Place Bid">
+                </form>
+
+                <a href="{% url 'addToWatchlist' item.id %}">Add to watchlist</a><br>
+
+                {% for i in watchlist %}
+
+                    {% if item.id == i.item.id %}
+                        <a href="{% url 'removeFromWatchlist' item.id %}"> Remove from watchlist </a>
+                    {% endif %} 
+
+                {% endfor %}
+
+            {% endif %}
+
+
+        {% endif %}
+
+        <form action = "{% url 'listings' item.id %}" method="POST" >
+            {% csrf_token %}
+            <textarea name = "comment_text" placeholder="Add a comment"></textarea>
+            <input type="submit" value="Comment" name="send">
+        </form>
+
+
+    {% endif %}
+    
+    <h3>Comments</h3>
+
+    <hr>
+
+    {% if comment_list %}
+            
+        {% for comment in comment_list %}
+            <strong> @{{ comment.commentor }} </strong> {{ comment.content }}
+            <hr>
+        {% endfor %}
+
+    {% else %}
+        waiting for your comments
+
+    {% endif %}
+
+</div>
+{% endblock %}

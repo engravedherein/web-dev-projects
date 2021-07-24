@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>{{ heading }}</h2>
+
+    {% if not list_items %}
+        No active listings
+    {% endif %}
+
+    {% for item in list_items %}
+    <a href = "{% url 'listings' item.id %}"><div>
+        <h3> {{ item.item_name }}</h3>
+        {% if item.item_image %}
+            <img src="{{ item.item_image }}"> <br>
+        {% endif %}
+        <h3> {{ item.item_price }} </h3>
+        {{ item.item_description }}     
+    </div></a>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2> {{ user.username }}'s Watchlist</h2>
+
+    {% if not watchlist %}
+        Your watchlist is empty! 
+    {% endif %}
+
+    {% if oye %}
+        {{ oye }}
+    {% endif %}
+
+    {% for element in watchlist %}
+    <a href = "{% url 'listings' element.item.id %}">
+    <div>
+        <h3> {{ element.item.item_name }}</h3>
+        {% if element.item.item_image %}
+            <img src="{{ element.item.item_image }}"> <br>
+        {% endif %}
+        <h3> {{ elelment.item.item_price }} </h3>
+        {{ element.item.item_description }}     <br>
+        <a href="{% url 'removeFromWatchlist' element.item.id %}"> Remove from my watchlist </a>
+    </div>
+    </a>
+    {% endfor %}
+
+{% endblock %}
